@@ -119,7 +119,7 @@ model MenuItem {
   id          String   @id @default(cuid())
   name        String
   description String?
-  price       Decimal  @db.Numeric(10, 2)
+  price       Decimal  @default(0)
   image       String?
   
   // Category
@@ -149,7 +149,7 @@ model MenuVariant {
   id          String   @id @default(cuid())
   name        String   // e.g., "Size", "Extra"
   value       String   // e.g., "Large", "Extra Cheese"
-  priceModifier Decimal @db.Numeric(10, 2) @default(0)
+  priceModifier Decimal @default(0)
   
   // Relationship
   menuItemId  String
@@ -181,8 +181,8 @@ model Table {
   qrCode      String?
   
   // Current order (if occupied)
-  currentOrderId String?
-  currentOrder   Order?   @relation(fields: [currentOrderId], references: [id])
+  currentOrderId String? @unique
+  currentOrder   Order?  @relation("TableCurrentOrder")
   
   // Metadata
   createdAt   DateTime @default(now())
@@ -206,7 +206,7 @@ model Order {
   
   // Table (for dine-in)
   tableId         String?
-  table           Table?      @relation(fields: [tableId], references: [id])
+  table           Table?  @relation("TableCurrentOrder", fields: [tableId], references: [id])
   
   // Customer info (for takeaway/delivery)
   customerName    String?
@@ -218,10 +218,10 @@ model Order {
   items           OrderItem[]
   
   // Calculations
-  subtotal        Decimal     @db.Numeric(10, 2) @default(0)
-  taxAmount       Decimal     @db.Numeric(10, 2) @default(0)
-  serviceCharge   Decimal     @db.Numeric(10, 2) @default(0)
-  totalAmount     Decimal     @db.Numeric(10, 2) @default(0)
+  subtotal        Decimal @default(0)
+  taxAmount       Decimal @default(0)
+  serviceCharge   Decimal @default(0)
+  totalAmount     Decimal @default(0)
   
   // Special instructions
   specialInstructions String?
@@ -256,7 +256,7 @@ model Order {
 model OrderItem {
   id              String  @id @default(cuid())
   quantity        Int
-  price           Decimal @db.Numeric(10, 2)
+  price           Decimal @default(0)
   specialNotes    String?
   
   // Relationships
@@ -335,7 +335,7 @@ model Payment {
   order           Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   
   // Payment info
-  amount          Decimal @db.Numeric(10, 2)
+  amount          Decimal @default(0)
   method          PaymentMethod
   status          PaymentStatus @default(PENDING)
   
@@ -348,7 +348,7 @@ model Payment {
   processedByUser   User @relation(fields: [processedByUserId], references: [id])
   
   // Refund info
-  refundedAmount  Decimal @db.Numeric(10, 2) @default(0)
+  refundedAmount  Decimal @default(0)
   refundReason    String?
   
   // Metadata
@@ -377,8 +377,8 @@ model RestaurantSettings {
   operatingHours  String? // JSON format
   
   // Fees
-  taxPercentage   Decimal @db.Numeric(5, 2) @default(0)
-  serviceChargePercentage Decimal @db.Numeric(5, 2) @default(0)
+  taxPercentage   Decimal @default(0)
+  serviceChargePercentage Decimal @default(0)
   
   // Features
   enableDelivery  Boolean @default(false)

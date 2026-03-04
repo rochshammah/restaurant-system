@@ -16,7 +16,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (userData?.data) {
-      setUser(userData.data);
+      setUser(userData.data as any);
     }
   }, [userData, setUser]);
 

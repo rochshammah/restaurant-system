@@ -55,7 +55,15 @@ export const useGetMenuItems = (categoryId?: string) => {
 export const useCreateMenuItem = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: any) => apiClient.createMenuItem(data),
+    mutationFn: (data: any) =>
+      apiClient.createMenuItem(
+        data.name,
+        data.price,
+        data.categoryId,
+        data.description,
+        data.image,
+        data.preparationTime
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["menu"] });
     },

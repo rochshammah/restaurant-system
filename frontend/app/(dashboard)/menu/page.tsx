@@ -41,7 +41,7 @@ export default function MenuPage() {
     );
   }
 
-  const categories = menuData?.data || [];
+  const categories: any[] = (menuData?.data as any) || [];
 
   return (
     <DashboardLayout>

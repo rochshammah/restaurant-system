@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { ApiError, asyncHandler } from "../utils/errors";
 import { verifyToken } from "../utils/auth";
-import { UserRole } from "../types";
+import { UserRole, IAuthRequest } from "../types";
 
 // Authentication middleware
 export const authenticate = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: IAuthRequest, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
@@ -28,12 +28,12 @@ export const authenticate = asyncHandler(
 
 // Authorization middleware - checks user role
 export const authorize = (...roles: UserRole[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: IAuthRequest, res: Response, next: NextFunction) => {
     if (!req.user) {
       throw new ApiError(401, "Not authenticated", "NOT_AUTHENTICATED");
     }
 
-    if (!roles.includes(req.user.role as UserRole)) {
+    if (!roles.includes(req.user.role)) {
       throw new ApiError(
         403,
         "Insufficient permissions",

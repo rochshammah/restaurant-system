@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { authenticate, authorize } from "../middlewares/auth";
+import { UserRole } from "../types";
 import * as analyticsController from "../controllers/analytics.controller";
 
 const router = Router();
 
 // All routes require authentication and manager+ role
 router.use(authenticate);
-router.use(authorize(["MANAGER", "ADMIN"]));
+router.use(authorize(UserRole.MANAGER, UserRole.ADMIN));
 
 // Dashboard metrics
 router.get("/dashboard/stats", analyticsController.getDashboardStats);

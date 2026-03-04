@@ -1,11 +1,17 @@
 // Backend Type Definitions
 
+import { Request } from "express";
+
 export interface JWTPayload {
   id: string;
   email: string;
   role: UserRole;
   iat?: number;
   exp?: number;
+}
+
+export interface IAuthRequest extends Request {
+  user?: JWTPayload;
 }
 
 export enum UserRole {

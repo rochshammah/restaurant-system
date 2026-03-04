@@ -16,7 +16,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("admin@restaurant.com");
   const [password, setPassword] = useState("admin123");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { mutate: login, isPending, error } = useLogin();
+  const { mutate: login, isPending } = useLogin();
 
   useEffect(() => {
     if (user) {

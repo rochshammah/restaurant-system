@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
 import { useGetAllOrders } from "@/lib/hooks/useApi";
@@ -10,17 +10,59 @@ import { Badge } from "@/components/common/Badge";
 import { CardSkeleton } from "@/components/common/Skeleton";
 import { formatCurrency, getStatusColor, getStatusLabel } from "@/lib/utils/helpers";
 
+/* =========================
+   Type Definitions
+========================= */
+
+type OrderStatus = "PENDING" | "PREPARING" | "READY" | "COMPLETED";
+
+interface OrderItem {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+interface Order {
+  id: string;
+  orderNumber: string;
+  totalAmount: number;
+  status: OrderStatus;
+  items: OrderItem[];
+}
+
+interface OrdersResponse {
+  data?: {
+    orders?: Order[];
+  };
+}
+
+/* =========================
+   Component
+========================= */
+
 export default function OrdersPage() {
   const router = useRouter();
   const { user } = useAuthStore();
-  const { data: ordersData, isLoading } = useGetAllOrders();
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const { data, isLoading } = useGetAllOrders() as {
+    data?: OrdersResponse;
+    isLoading: boolean;
+  };
+
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | null>(null);
 
   useEffect(() => {
     if (!user) {
       router.push("/login");
     }
   }, [user, router]);
+
+  const orders: Order[] = data?.data?.orders ?? [];
+
+  const filteredOrders = useMemo(() => {
+    if (!statusFilter) return orders;
+    return orders.filter((order) => order.status === statusFilter);
+  }, [orders, statusFilter]);
 
   if (isLoading) {
     return (
@@ -34,14 +76,10 @@ export default function OrdersPage() {
     );
   }
 
-  const orders = ordersData?.data?.orders || [];
-  const filteredOrders = statusFilter
-    ? orders.filter((o: any) => o.status === statusFilter)
-    : orders;
-
   return (
     <DashboardLayout>
       <div className="space-y-6">
+        {/* Header */}
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             Orders
@@ -63,22 +101,28 @@ export default function OrdersPage() {
           >
             All ({orders.length})
           </button>
-          {["PENDING", "PREPARING", "READY", "COMPLETED"].map((status) => {
-            const count = orders.filter((o: any) => o.status === status).length;
-            return (
-              <button
-                key={status}
-                onClick={() => setStatusFilter(status)}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                  statusFilter === status
-                    ? "bg-primary-600 text-white"
-                    : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
-                }`}
-              >
-                {getStatusLabel(status)} ({count})
-              </button>
-            );
-          })}
+
+          {(["PENDING", "PREPARING", "READY", "COMPLETED"] as OrderStatus[]).map(
+            (status) => {
+              const count = orders.filter(
+                (order) => order.status === status
+              ).length;
+
+              return (
+                <button
+                  key={status}
+                  onClick={() => setStatusFilter(status)}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                    statusFilter === status
+                      ? "bg-primary-600 text-white"
+                      : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                  }`}
+                >
+                  {getStatusLabel(status)} ({count})
+                </button>
+              );
+            }
+          )}
         </div>
 
         {/* Orders List */}
@@ -90,10 +134,11 @@ export default function OrdersPage() {
               </CardBody>
             </Card>
           ) : (
-            filteredOrders.map((order: any) => (
+            filteredOrders.map((order) => (
               <Card key={order.id}>
                 <CardBody>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                    {/* Order Number */}
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         Order Number
@@ -102,28 +147,37 @@ export default function OrdersPage() {
                         {order.orderNumber}
                       </p>
                     </div>
+
+                    {/* Amount */}
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         Amount
                       </p>
                       <p className="font-semibold text-gray-900 dark:text-white">
-                        {formatCurrency(Number(order.totalAmount))}
+                        {formatCurrency(order.totalAmount)}
                       </p>
                     </div>
+
+                    {/* Status (Dynamic Color) */}
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         Status
                       </p>
-                      <Badge variant="primary" className="mt-1">
+                      <Badge
+                        variant={getStatusColor(order.status)}
+                        className="mt-1"
+                      >
                         {getStatusLabel(order.status)}
                       </Badge>
                     </div>
+
+                    {/* Items Count */}
                     <div className="text-right">
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         Items
                       </p>
                       <p className="font-semibold text-gray-900 dark:text-white">
-                        {order.items?.length || 0}
+                        {order.items?.length ?? 0}
                       </p>
                     </div>
                   </div>

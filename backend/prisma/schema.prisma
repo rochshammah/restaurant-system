@@ -205,7 +205,7 @@ model Order {
   status          OrderStatus @default(PENDING)
   
   // Table (for dine-in)
-  tableId         String?
+  tableId         String? @unique
   table           Table?  @relation("TableCurrentOrder", fields: [tableId], references: [id])
   
   // Customer info (for takeaway/delivery)

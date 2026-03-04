@@ -155,8 +155,8 @@ export class PaymentService {
       },
     });
 
-    const totalRevenue = payments.reduce((sum, p) => sum + Number(p.amount), 0);
-    const totalRefunds = payments.reduce((sum, p) => sum + Number(p.refundedAmount), 0);
+    const totalRevenue = payments.reduce((sum: number, p: any) => sum + Number(p.amount), 0);
+    const totalRefunds = payments.reduce((sum: number, p: any) => sum + Number(p.refundedAmount), 0);
 
     return {
       totalRevenue: totalRevenue - totalRefunds,

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 import { OrderStatus } from "../types";
 
 const prisma = new PrismaClient();
@@ -36,7 +36,7 @@ export class AnalyticsService {
     });
 
     const todayRevenue = payments.reduce(
-      (sum, p) => sum + Number(p.amount) - Number(p.refundedAmount),
+      (sum: number, p: any) => sum + Number(p.amount) - Number(p.refundedAmount),
       0
     );
 
@@ -74,16 +74,16 @@ export class AnalyticsService {
     });
 
     const ranked = items
-      .map((item) => ({
+      .map((item: any) => ({
         id: item.id,
         name: item.name,
         price: item.price,
         orders: item.orderItems.length,
-        totalQuantity: item.orderItems.reduce((sum, oi) => sum + oi.quantity, 0),
+        totalQuantity: item.orderItems.reduce((sum: number, oi: any) => sum + oi.quantity, 0),
         revenue: Number(item.price) *
-          item.orderItems.reduce((sum, oi) => sum + oi.quantity, 0),
+          item.orderItems.reduce((sum: number, oi: any) => sum + oi.quantity, 0),
       }))
-      .sort((a, b) => b.totalQuantity - a.totalQuantity)
+      .sort((a: any, b: any) => b.totalQuantity - a.totalQuantity)
       .slice(0, limit);
 
     return ranked;
@@ -110,7 +110,7 @@ export class AnalyticsService {
       hourly[i] = 0;
     }
 
-    orders.forEach((order) => {
+    orders.forEach((order: any) => {
       const hour = new Date(order.createdAt).getHours();
       hourly[hour]++;
     });
@@ -186,7 +186,7 @@ export class AnalyticsService {
 
     if (payments.length === 0) return 0;
 
-    const total = payments.reduce((sum, p) => sum + Number(p.amount), 0);
+    const total = payments.reduce((sum: number, p: any) => sum + Number(p.amount), 0);
     return total / payments.length;
   }
 

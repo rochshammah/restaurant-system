@@ -14,6 +14,15 @@ export interface IAuthRequest extends Request {
   user?: JWTPayload;
 }
 
+// Extend Express Request type to include user
+declare global {
+  namespace Express {
+    interface Request {
+      user?: JWTPayload;
+    }
+  }
+}
+
 export enum UserRole {
   ADMIN = "ADMIN",
   MANAGER = "MANAGER",

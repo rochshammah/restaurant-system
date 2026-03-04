@@ -1,11 +1,11 @@
-import { Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { ApiError, asyncHandler } from "../utils/errors";
 import { verifyToken } from "../utils/auth";
-import { UserRole, IAuthRequest } from "../types";
+import { UserRole } from "../types";
 
 // Authentication middleware
 export const authenticate = asyncHandler(
-  async (req: IAuthRequest, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
@@ -24,7 +24,7 @@ export const authenticate = asyncHandler(
 
 // Authorization middleware - checks user role
 export const authorize = (...roles: UserRole[]) => {
-  return (req: IAuthRequest, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       throw new ApiError(401, "Not authenticated", "NOT_AUTHENTICATED");
     }

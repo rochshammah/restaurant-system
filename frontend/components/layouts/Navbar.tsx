@@ -1,12 +1,10 @@
 'use client';
 
-import { useState } from "react";
 import Link from "next/link";
 import { useAuthStore } from "@/lib/store";
 import { Button } from "@/components/common/Button";
 
 export const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuthStore();
 
   return (

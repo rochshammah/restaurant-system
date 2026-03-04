@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import OrderService from "../services/order.service";
 import { asyncHandler, sendSuccess, ApiError } from "../utils/errors";
 import { OrderStatus, OrderType } from "../types";

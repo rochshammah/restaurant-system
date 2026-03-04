@@ -143,7 +143,7 @@ export class AnalyticsService {
       });
 
       const revenue = payments.reduce(
-        (sum, p) => sum + Number(p.amount) - Number(p.refundedAmount),
+        (sum: number, p: any) => sum + Number(p.amount) - Number(p.refundedAmount),
         0
       );
 

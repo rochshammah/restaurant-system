@@ -67,8 +67,8 @@ export class OrderService {
         createdByUserId: data.createdByUserId,
         status: OrderStatus.PENDING,
         items: {
-          create: data.items.map((item) => {
-            const menuItem = menuItems.find((m) => m.id === item.menuItemId);
+          create: data.items.map((item: any) => {
+            const menuItem = menuItems.find((m: any) => m.id === item.menuItemId);
             if (!menuItem) {
               throw new ApiError(404, "Menu item not found", "ITEM_NOT_FOUND");
             }
@@ -183,7 +183,7 @@ export class OrderService {
     const where: Prisma.OrderWhereInput = {};
 
     if (filters?.status) where.status = filters.status;
-    if (filters?.type) where.type = filters.type;
+    if (filters?.type) where.type = filters.type as any;
     if (filters?.tableId) where.tableId = filters.tableId;
 
     const [orders, total] = await Promise.all([

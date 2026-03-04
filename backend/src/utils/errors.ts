@@ -1,19 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ApiResponse } from "../types";
 
-// Extend Express Request to include user info
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-        email: string;
-        role: string;
-      };
-    }
-  }
-}
-
 export class ApiError extends Error {
   constructor(
     public statusCode: number,

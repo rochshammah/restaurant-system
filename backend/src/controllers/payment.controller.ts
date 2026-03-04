@@ -1,14 +1,12 @@
 import { Request, Response } from "express";
 import PaymentService from "../services/payment.service";
 import { asyncHandler, sendSuccess, ApiError } from "../utils/errors";
-import { asyncHandler } from "../utils/errors";
-import { IAuthRequest } from "../types";
 
 export const createPayment = asyncHandler(
-  async (req: IAuthRequest, res: Response) => {
+  async (req: Request, res: Response) => {
     const { orderId, amount, method, transactionId } = req.body;
 
-    const payment = await paymentService.createPayment({
+    const payment = await PaymentService.createPayment({
       orderId,
       amount,
       method,
@@ -22,14 +20,14 @@ export const createPayment = asyncHandler(
 
 export const getPaymentByOrderId = asyncHandler(
   async (req: Request, res: Response) => {
-    const payment = await paymentService.getPaymentByOrderId(req.params.orderId);
+    const payment = await PaymentService.getPaymentByOrderId(req.params.orderId);
     res.json({ success: true, data: payment });
   }
 );
 
 export const getPaymentById = asyncHandler(
   async (req: Request, res: Response) => {
-    const payment = await paymentService.getPaymentById(req.params.id);
+    const payment = await PaymentService.getPaymentById(req.params.id);
     res.json({ success: true, data: payment });
   }
 );
@@ -39,7 +37,7 @@ export const getAllPayments = asyncHandler(
     const limit = parseInt(req.query.limit as string) || 50;
     const offset = parseInt(req.query.offset as string) || 0;
 
-    const result = await paymentService.getAllPayments(limit, offset);
+    const result = await PaymentService.getAllPayments(limit, offset);
     res.json({ success: true, data: result });
   }
 );
@@ -47,7 +45,7 @@ export const getAllPayments = asyncHandler(
 export const refundPayment = asyncHandler(
   async (req: Request, res: Response) => {
     const { refundAmount, reason } = req.body;
-    const payment = await paymentService.refundPayment(
+    const payment = await PaymentService.refundPayment(
       req.params.id,
       refundAmount,
       reason

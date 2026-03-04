@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { config } from "../config";
 import { JWTPayload } from "../types";
@@ -18,15 +18,17 @@ export const comparePassword = async (
 
 // JWT token generation
 export const generateToken = (payload: Omit<JWTPayload, 'iat' | 'exp'>): string => {
-  return jwt.sign(payload, config.jwtSecret, {
+  const options: SignOptions = {
     expiresIn: config.jwtExpiry,
-  });
+  };
+  return jwt.sign(payload, config.jwtSecret as string, options);
 };
 
 export const generateRefreshToken = (userId: string): string => {
-  return jwt.sign({ id: userId }, config.refreshTokenSecret, {
+  const options: SignOptions = {
     expiresIn: config.refreshTokenExpiry,
-  });
+  };
+  return jwt.sign({ id: userId }, config.refreshTokenSecret as string, options);
 };
 
 // Token verification

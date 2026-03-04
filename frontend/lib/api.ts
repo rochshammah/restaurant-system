@@ -69,8 +69,8 @@ class ApiClient {
       "/api/auth/login",
       { email, password }
     );
-    if (response.data?.token) {
-      this.setToken(response.data.token);
+    if (response.data?.data?.token) {
+      this.setToken(response.data.data.token);
     }
     return response;
   }

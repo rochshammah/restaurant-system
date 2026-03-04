@@ -83,7 +83,7 @@ export class OrderService {
               specialNotes: item.specialNotes,
               variants: {
                 create: item.variants
-                  ? item.variants.map((variantId) => ({
+                  ? item.variants.map((variantId: any) => ({
                       variantId,
                     }))
                   : [],

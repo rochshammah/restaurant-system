@@ -56,7 +56,7 @@ export const refundPayment = asyncHandler(
 
 export const getDailyRevenue = asyncHandler(
   async (req: Request, res: Response) => {
-    const revenue = await paymentService.getDailyRevenue();
+    const revenue = await PaymentService.getDailyRevenue();
     res.json({ success: true, data: revenue });
   }
 );

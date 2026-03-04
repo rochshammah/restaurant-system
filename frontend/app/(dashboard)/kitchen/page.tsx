@@ -8,7 +8,7 @@ import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 import { Card, CardBody, CardHeader } from "@/components/common/Card";
 import { Badge } from "@/components/common/Badge";
 import { Button } from "@/components/common/Button";
-import { formatCurrency, getStatusLabel } from "@/lib/utils/helpers";
+import { getStatusLabel } from "@/lib/utils/helpers";
 
 export default function KitchenPage() {
   const router = useRouter();

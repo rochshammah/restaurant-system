@@ -8,13 +8,16 @@ import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 import { Card, CardBody } from "@/components/common/Card";
 import { Badge } from "@/components/common/Badge";
 import { CardSkeleton } from "@/components/common/Skeleton";
-import { formatCurrency, getStatusColor, getStatusLabel } from "@/lib/utils/helpers";
+import {
+  formatCurrency,
+  getBadgeVariant,
+  getStatusLabel,
+  OrderStatus,
+} from "@/lib/utils/helpers";
 
 /* =========================
    Type Definitions
 ========================= */
-
-type OrderStatus = "PENDING" | "PREPARING" | "READY" | "COMPLETED";
 
 interface OrderItem {
   id: string;
@@ -102,27 +105,27 @@ export default function OrdersPage() {
             All ({orders.length})
           </button>
 
-          {(["PENDING", "PREPARING", "READY", "COMPLETED"] as OrderStatus[]).map(
-            (status) => {
-              const count = orders.filter(
-                (order) => order.status === status
-              ).length;
+          {(
+            ["PENDING", "PREPARING", "READY", "COMPLETED"] as OrderStatus[]
+          ).map((status) => {
+            const count = orders.filter(
+              (order) => order.status === status
+            ).length;
 
-              return (
-                <button
-                  key={status}
-                  onClick={() => setStatusFilter(status)}
-                  className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                    statusFilter === status
-                      ? "bg-primary-600 text-white"
-                      : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
-                  }`}
-                >
-                  {getStatusLabel(status)} ({count})
-                </button>
-              );
-            }
-          )}
+            return (
+              <button
+                key={status}
+                onClick={() => setStatusFilter(status)}
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                  statusFilter === status
+                    ? "bg-primary-600 text-white"
+                    : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                }`}
+              >
+                {getStatusLabel(status)} ({count})
+              </button>
+            );
+          })}
         </div>
 
         {/* Orders List */}
@@ -158,13 +161,13 @@ export default function OrdersPage() {
                       </p>
                     </div>
 
-                    {/* Status (Dynamic Color) */}
+                    {/* Status (STRICT & SAFE) */}
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         Status
                       </p>
                       <Badge
-                        variant={getStatusColor(order.status)}
+                        variant={getBadgeVariant(order.status)}
                         className="mt-1"
                       >
                         {getStatusLabel(order.status)}

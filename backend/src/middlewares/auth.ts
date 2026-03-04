@@ -14,11 +14,7 @@ export const authenticate = asyncHandler(
 
     try {
       const decoded = verifyToken(token);
-      req.user = {
-        id: decoded.id,
-        email: decoded.email,
-        role: decoded.role,
-      };
+      req.user = decoded;
       next();
     } catch (error) {
       throw new ApiError(401, "Invalid or expired token", "INVALID_TOKEN");

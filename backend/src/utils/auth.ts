@@ -19,14 +19,14 @@ export const comparePassword = async (
 // JWT token generation
 export const generateToken = (payload: Omit<JWTPayload, 'iat' | 'exp'>): string => {
   const options: SignOptions = {
-    expiresIn: config.jwtExpiry as string,
+    expiresIn: (config.jwtExpiry || "24h") as string | number,
   };
   return jwt.sign(payload, config.jwtSecret as string, options);
 };
 
 export const generateRefreshToken = (userId: string): string => {
   const options: SignOptions = {
-    expiresIn: config.refreshTokenExpiry as string,
+    expiresIn: (config.refreshTokenExpiry || "7d") as string | number,
   };
   return jwt.sign({ id: userId }, config.refreshTokenSecret as string, options);
 };

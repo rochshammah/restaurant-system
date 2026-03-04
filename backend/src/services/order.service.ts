@@ -180,7 +180,7 @@ export class OrderService {
     const limit = filters?.limit || 50;
     const offset = filters?.offset || 0;
 
-    const where: Prisma.OrderWhereInput = {};
+    const where: any = {};
 
     if (filters?.status) where.status = filters.status;
     if (filters?.type) where.type = filters.type as any;
